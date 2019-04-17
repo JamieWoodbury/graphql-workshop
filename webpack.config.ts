@@ -3,7 +3,6 @@ import path from 'path';
 import { config as dotenv } from 'dotenv';
 
 dotenv({ path: path.resolve(__dirname, '.env') });
-console.log(process.env.GITHUB_TOKEN);
 const DEV_PORT = 8080;
 
 const config: webpack.Configuration = {

@@ -4,7 +4,7 @@
   "description": "## Setup",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "lerna exec npm start --scope"
   },
   "repository": {
     "type": "git",
@@ -48,6 +48,10 @@
     "webpack-merge": "^4.2.1"
   },
   "dependencies": {
-    "@types/dotenv": "^6.1.1"
+    "@types/dotenv": "^6.1.1",
+    "graphql": "^14.2.1",
+    "graphql-tag": "^2.10.1",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6"
   }
 }
