@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "lib": ["es2017", "dom"],
+    "sourceMap": true,
+    "noImplicitAny": true,
+    "module": "commonjs",
+    "target": "es5",
+    "jsx": "react",
+    "noEmitOnError": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "strict": true,
+    "strictNullChecks": true,
+    "typeRoots": ["./node_modules/@types"],
+    "declaration": false,
+    "resolveJsonModule": true,
+    "keyofStringsOnly": true,
+    "esModuleInterop": true,
+    "noUnusedLocals": true
+  },
+  "include": ["./packages/**/*", "./interfaces", "./packages/**/interfaces"]
+}

@@ -1,0 +1,53 @@
+{
+  "name": "graphql-workshop",
+  "version": "1.0.0",
+  "description": "## Setup",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JamieWoodbury/graphql-workshop.git"
+  },
+  "author": "Jamie Woodbury",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JamieWoodbury/graphql-workshop/issues"
+  },
+  "homepage": "https://github.com/JamieWoodbury/graphql-workshop#readme",
+  "devDependencies": {
+    "@babel/core": "^7.4.3",
+    "@babel/plugin-proposal-class-properties": "^7.4.0",
+    "@babel/preset-env": "^7.4.3",
+    "@babel/preset-react": "^7.0.0",
+    "@babel/preset-typescript": "^7.3.3",
+    "@types/node": "^11.13.4",
+    "@types/react": "^16.8.13",
+    "@types/react-dom": "^16.8.4",
+    "@types/webpack": "^4.4.27",
+    "@types/webpack-dev-server": "^3.1.5",
+    "@types/webpack-merge": "^4.1.4",
+    "babel-loader": "^8.0.5",
+    "css-loader": "^2.1.1",
+    "dotenv": "^7.0.0",
+    "lerna": "^3.13.3",
+    "postcss-loader": "^3.0.0",
+    "prettier": "^1.17.0",
+    "react-hot-loader": "^4.8.4",
+    "style-loader": "^0.23.1",
+    "ts-loader": "^5.3.3",
+    "ts-node": "^8.1.0",
+    "tslint": "^5.16.0",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^3.4.3",
+    "webpack": "^4.30.0",
+    "webpack-cli": "^3.3.0",
+    "webpack-dev-server": "^3.3.1",
+    "webpack-html-plugin": "^0.1.1",
+    "webpack-merge": "^4.2.1"
+  },
+  "dependencies": {
+    "@types/dotenv": "^6.1.1"
+  }
+}
