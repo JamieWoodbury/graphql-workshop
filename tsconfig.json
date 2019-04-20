@@ -15,8 +15,7 @@
     "declaration": false,
     "resolveJsonModule": true,
     "keyofStringsOnly": true,
-    "esModuleInterop": true,
-    "noUnusedLocals": true
+    "esModuleInterop": true
   },
   "include": ["./packages/**/*", "./interfaces", "./packages/**/interfaces"]
 }

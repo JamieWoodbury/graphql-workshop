@@ -1,33 +1,60 @@
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
-
-const gqlFetch = (query: string) =>
-  fetch('https://api.github.com/graphql', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-      Authorization: `Bearer ${process.env.GITHUB_TOKEN}`
-    },
-    body: JSON.stringify({ query })
-  }).then(r => r.json());
+import { useAsyncEffect, gqlFetch, Search, Pagination } from './util';
+import styles from './styles.css';
 
 const query = `
-  {
-    user(id: 5) {
-      firstName
-      lastName
-    }
+{
+  viewer {
+    login
   }
+}
 `;
 
-export interface Props {}
+type Response<T> = {
+  data: T;
+};
 
-const App = (props: Props) => {
-  useEffect(() => {
-    gqlFetch(query);
+interface Viewer {
+  login: string;
+}
+
+interface Data {
+  viewer: Viewer;
+}
+
+const App = () => {
+  const [data, setData] = useState<Data | null>(null);
+  const [resultsPerPage, setResultsPerPage] = useState<number>(5);
+
+  useAsyncEffect(async () => {
+    const res = await gqlFetch<Response<Data>>(query);
+    setData(res.data);
   }, []);
-  return <div>Test</div>;
+
+  return data ? (
+    <div className={styles.main}>
+      <h2>
+        Welcome to Github <em>{data.viewer.login}</em>!
+      </h2>
+      <h3>Your Repositories:</h3>
+
+      <Search onSubmit={search => null} />
+
+      <table className={styles.table}>
+        <thead>
+          <tr>
+            <th>Repo Name</th>
+          </tr>
+        </thead>
+        {/* Add the list of repositories here */}
+        <tbody />
+      </table>
+      <Pagination resultsPerPage={resultsPerPage} setResultsPerPage={setResultsPerPage} />
+    </div>
+  ) : (
+    <p>Loading...</p>
+  );
 };
 
 ReactDOM.render(<App />, document.getElementById('app'));

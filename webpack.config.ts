@@ -25,7 +25,6 @@ const config: webpack.Configuration = {
   optimization: {
     namedModules: true
   },
-
   module: {
     rules: [
       {
@@ -37,7 +36,11 @@ const config: webpack.Configuration = {
             cacheDirectory: true,
             babelrc: false,
             presets: ['@babel/preset-env', '@babel/preset-typescript', '@babel/preset-react'],
-            plugins: ['react-hot-loader/babel', '@babel/plugin-proposal-class-properties']
+            plugins: [
+              'react-hot-loader/babel',
+              '@babel/plugin-proposal-class-properties',
+              '@babel/plugin-transform-runtime'
+            ]
           }
         }
       },
@@ -54,15 +57,15 @@ const config: webpack.Configuration = {
               modules: true,
               url: false
             }
-          },
-          {
-            loader: 'postcss-loader',
-            options: {
-              config: {
-                path: path.resolve(__dirname, '../postcss.config.js')
-              }
-            }
           }
+          // {
+          //   loader: 'postcss-loader',
+          //   options: {
+          //     config: {
+          //       path: path.resolve(__dirname, '../postcss.config.js')
+          //     }
+          //   }
+          // }
         ]
       }
     ]
@@ -70,7 +73,10 @@ const config: webpack.Configuration = {
   resolve: {
     mainFields: ['module', 'main'],
     modules: ['node_modules', path.resolve(__dirname, './packages')],
-    extensions: ['.ts', '.tsx', '.js', '.css']
+    extensions: ['.ts', '.tsx', '.js', '.css'],
+    alias: {
+      'react-dom': '@hot-loader/react-dom'
+    }
   },
 
   target: 'web',
