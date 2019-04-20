@@ -1,6 +1,6 @@
-import React, { useState, Dispatch, ChangeEvent } from 'react';
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
-import { useAsyncEffect, gqlFetch } from './util';
+import { useAsyncEffect, gqlFetch, Search, Pagination } from './util';
 import styles from './styles.css';
 
 const query = `
@@ -58,12 +58,11 @@ const search = async (variables: Variables, cb: (data: Data) => void) => {
 const App = () => {
   const [data, setData] = useState<Data | null>(null);
   const [resultsPerPage, setResultsPerPage] = useState<number>(5);
-  const [login, setLogin] = useState<string>('');
 
   useAsyncEffect(async () => {
-    const res = await gqlFetch<Response<Data>>(query, { resultsPerPage, login });
+    const res = await gqlFetch<Response<Data>>(query, { resultsPerPage, login: '' });
     setData(res.data);
-  }, [resultsPerPage, '']);
+  }, [resultsPerPage]);
 
   return data ? (
     <div className={styles.main}>
@@ -72,13 +71,7 @@ const App = () => {
       </h2>
       <h3>Your Repositories:</h3>
 
-      <input
-        value={login}
-        onChange={(e: ChangeEvent<HTMLInputElement>) => {
-          setLogin(e.currentTarget.value);
-        }}
-      />
-      <button onClick={() => search({ resultsPerPage, login }, setData)}>Search</button>
+      <Search onSubmit={(login: string) => search({ resultsPerPage, login }, setData)} />
 
       <table className={styles.table}>
         <thead>
@@ -101,26 +94,5 @@ const App = () => {
     <p>Loading...</p>
   );
 };
-
-interface PaginationProps {
-  resultsPerPage: number;
-  setResultsPerPage: (n: number) => void;
-}
-
-const Pagination = ({ resultsPerPage, setResultsPerPage }: PaginationProps) => (
-  <div className={styles.pagination}>
-    <span>Results Per Page: </span>
-    {[5, 10, 20].map(n => (
-      <a
-        className={resultsPerPage === n ? styles.active : ''}
-        href="javascript:void(0)"
-        key={n}
-        onClick={() => setResultsPerPage(n)}
-      >
-        {n}
-      </a>
-    ))}
-  </div>
-);
 
 ReactDOM.render(<App />, document.getElementById('app'));

@@ -170,7 +170,7 @@ const search = async (variables: Variables, cb: (data: Data) => void) => {
 
 // ...
 
-<Search onSubmit={login => search({ resultsPerPage, login }, setData)} />;
+<Search onSubmit={(login: string) => search({ resultsPerPage, login }, setData)} />;
 ```
 
 <details>
