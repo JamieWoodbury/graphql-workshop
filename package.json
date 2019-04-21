@@ -52,9 +52,14 @@
   "dependencies": {
     "@babel/runtime": "^7.4.3",
     "@types/dotenv": "^6.1.1",
+    "apollo-cache-inmemory": "^1.5.1",
+    "apollo-client": "^2.5.1",
+    "apollo-link-context": "^1.0.17",
+    "apollo-link-http": "^1.5.14",
     "graphql": "^14.2.1",
     "graphql-tag": "^2.10.1",
     "react": "^16.8.6",
+    "react-apollo-hooks": "^0.4.5",
     "react-dom": "^16.8.6"
   }
 }

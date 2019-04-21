@@ -1,0 +1,49 @@
+:global(body) {
+  display: flex;
+  width: 100wv;
+  background-color: #cecece;
+}
+
+:global(#app) {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.main {
+  width: 800px;
+  padding: 64px;
+  border: 6px ridge;
+}
+
+.table,
+th,
+td {
+  border: 1px solid black;
+}
+
+.table {
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+td,
+th {
+  padding: 4px;
+}
+
+.pagination {
+  float: right;
+}
+
+.pagination a {
+  margin-left: 4px;
+}
+
+.pagination .active {
+  text-decoration: none;
+  color: black;
+  cursor: pointer;
+  pointer-events: none;
+}
