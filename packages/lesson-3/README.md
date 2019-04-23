@@ -1,176 +1,79 @@
-# Lesson 2: Creating a GraphQL Client
+# Lesson 3: Apollo
 
-In this lesson we're going to build a React app to list the top repositories for a given user on Github, using their GraphQL API.
+In this lesson we're going to continue where we left off from lesson-2, only using Apollo to manage our GraphQL queries.
 
-## Introduction to GraphQL APIs
+## Introducing Apollo
 
-Most apps using GraphQL will use some sort of library to manage interactions with the server, but there's really no reason why you can't just execute api calls against the server directly. A GraphQL endpoint behaves just like any other endpoint, except that every operation we perform (regardless of whether it is a read or write operation) will be made as a post request containing two fields:
-
-1. `query` which contains our GraphQL query string
-2. `variables` an optional entry that contains any arguments required by the query
-
-So, to call the Github API and fetch the currently logged in user, we would write:
-
-```js
-const query = `
-{
-  viewer {
-    login
-  }
-}
-`;
-
-fetch('https://api.github.com/graphql', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-    Accept: 'application/json',
-    Authorization: `Bearer 123faketoken`
-  },
-  body: JSON.stringify({ query })
-});
-```
-
-Which would return the following payload:
-
-```json
-{
-  "data": {
-    "viewer": {
-      "login": "JamieWoodbury"
-    }
-  }
-}
-```
-
-This is really all libraries like Apollo or Relay are doing under the hood. I don't mean to discount them, they're both fantastic tools that abstract away a lot of the complexity of state management, but there's no need to think their performing some form of magic to make GraphQL work.
-
-## Exercises
-
-### 1. List your most recent five repositories
-
-Modify the query in `index.tsx` to also fetch your most recent repositories (you should be able to use a query from lesson-1), and add some markup to display them on the page. Remember, since we are using typescript you will also need to update the type definitions for the response.
-
-<details>
-  <summary>Solution</summary>
+Apollo[-client] is a client-side framework designed to execute GraphQL queries and manage the resulting state. You can think of it as a combination of `fetch` and `redux`, with all of the complexity abstracted away. To create a very minimal component using Apollo, we would write:
 
 ```typescript
-const query = `
-  query {
+import React from 'react';
+import gql from 'graphql-tag';
+import { useQuery } from 'react-apollo-hooks';
+
+const query = gql`
+  {
     viewer {
       login
-      repositories(last: 5) {
-        nodes {
-          name
-          id
-        }
-      }
     }
   }
 `;
-
-type NodeList<T> = {
-  nodes: T[];
-};
-
-type Response<T> = {
-  data: T;
-};
 
 interface Data {
-  viewer: Viewer;
+  viewer: {
+    login: string;
+  };
 }
 
-interface Repository {
-  id: string;
-  name: string;
-}
+export default () => {
+  const { data, error, loading } = useQuery<Data>(query);
 
-interface Viewer {
-  login: string;
-  repositories: NodeList<Repository>;
-}
-```
-
-</details>
-
-### 2. Allow users to display 5, 10, or 20 results
-
-For this exercise you'll need to use variables in your GraphQL query. To make a request containing variables, just pass a variables object as the second argument to `gqlFetch`. e.g.
-
-```typescript
-query = `
-query UserQuery($login: String!){
-  user(login: $login) {
-    name
-    location
+  if (loading) {
+    return <p>Loading...</p>;
+  } else if (error) {
+    return <p>Something when wrong.</p>;
+  } else if (data) {
+    return <p>Hello {data.viewer.login}</p>;
   }
-}
-`;
-
-gqlFetch(query, { login: 'JamieWoodbury' });
-```
-
-<details>
-  <summary>Solution</summary>
-
-```typescript
-const query = `
-  query RootQuery($resultsPerPage: Int!) {
-    viewer {
-      login
-      repositories(last: $resultsPerPage) {
-        nodes {
-          name
-          id
-        }
-      }
-    }
-  }
-`;
-
-// ...
-
-useAsyncEffect(async () => {
-  const res = await gqlFetch<Response>(query, { resultsPerPage });
-  setState(res.data);
-}, [resultsPerPage]);
-```
-
-</details>
-
-### 3. [Optional] Rather than displaying _your_ repositories, allow users to search for repositories by any user given their login.
-
-<details>
-  <summary>Solution</summary>
-
-```typescript
-const query = `
-  query ViewerQuery($resultsPerPage: Int!, $login: String!) {
-    viewer {
-      login
-    }
-    user(login: $login) {
-      repositories(last: $resultsPerPage) {
-        nodes {
-          name
-          id
-        }
-      }
-    }
-  }
-`;
-
-// ...
-
-const search = async (variables: Variables, cb: (data: Data) => void) => {
-  const res = await gqlFetch<Response<Data>>(query, variables);
-  cb(res.data);
 };
-
-// ...
-
-<Search onSubmit={(login: string) => search({ resultsPerPage, login }, setData)} />;
 ```
 
-<details>
+This looks very similar to what we were doing with `gqlFetch` in the previous lesson, but with all of the state management logic stripped away. What we're left with are three variables `data`, `loading`, and `error`. When the request first executes `loading` will be true, until the query resolves. If it resolves as a success, the component will re-render and `data` will contain the result of our query. If it errors out, `error` will contain the relevant error.
+
+What makes Apollo powerful is that if we were to make this request again, Apollo would first check to see if the relevant nodes are contained in its cache. If it finds the relevant data, it will return that and avoid making another network call. If you've ever used other state management solutions like redux, you'll understand how much effort not having to manage this state yourself could save. Just write your query, and that's it [mostly].
+
+## Setting up the Apollo Client
+
+To create a new client, your first need to define a few [Apollo Links](https://www.apollographql.com/docs/link/) to point Apollo to your GraphQL api, handle Auth, and create a cache for it to store the request data. What exactly apollo links are is beyond the scope of this tutorial, but you can think of them as a kind of middleware for your graphQL reuests.
+
+Like redux, Apollo keeps a global state inside of a React Context at the root of your application, that gets injected using the ApolloProvider.
+
+```typescript
+// Passes the auth token header along with every request
+const authLink = setContext((_, { headers }) => ({
+  headers: {
+    ...headers,
+    authorization: `Bearer ${process.env.GITHUB_TOKEN}`
+  }
+}));
+
+// Tell apollo where to find the GraphQL schema
+const httpLink = createHttpLink({
+  uri: 'https://api.github.com/graphql'
+});
+
+// Initialize the client, telling it to cache requests in-memory
+const client = new ApolloClient({
+  link: authLink.concat(httpLink),
+  cache: new InMemoryCache()
+});
+
+ReactDOM.render(
+  <ApolloProvider client={client}>
+    <App />
+  </ApolloProvider>,
+  document.getElementById('app')
+);
+```
+
+With that we're free to make graphQL requests from inside the `App` component using the `useQuery` and `useMutation` hooks provided by `react-apollo-hooks`.
