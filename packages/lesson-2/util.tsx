@@ -1,25 +1,6 @@
 import React, { useState, ChangeEvent, useEffect } from 'react';
 import styles from './styles.css';
 
-export const useAsyncEffect = (fn: () => Promise<any>, deps?: any[]) => {
-  return useEffect(() => {
-    fn();
-  }, deps);
-};
-
-export async function gqlFetch<R>(query: string, variables?: any) {
-  const res = await fetch('https://api.github.com/graphql', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-      Authorization: `Bearer ${process.env.GITHUB_TOKEN}`
-    },
-    body: JSON.stringify({ query, variables })
-  });
-  return res.json() as Promise<R>;
-}
-
 interface PaginationProps {
   resultsPerPage: number;
   setResultsPerPage: (n: number) => void;

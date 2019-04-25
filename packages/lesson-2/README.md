@@ -73,10 +73,6 @@ type NodeList<T> = {
   nodes: T[];
 };
 
-type Response<T> = {
-  data: T;
-};
-
 interface Data {
   viewer: Viewer;
 }
@@ -88,7 +84,9 @@ interface Repository {
 
 interface Viewer {
   login: string;
-  repositories: NodeList<Repository>;
+  repositories: {
+    nodes: Repository: [];
+  };
 }
 ```
 
@@ -96,7 +94,7 @@ interface Viewer {
 
 ### 2. Allow users to display 5, 10, or 20 results
 
-For this exercise you'll need to use variables in your GraphQL query. To make a request containing variables, just pass a variables object as the second argument to `gqlFetch`. e.g.
+For this exercise you'll need to use variables in your GraphQL query. To make a request containing variables, just pass a variables object alongside the query in your fetch call. e.g.
 
 ```typescript
 query = `
@@ -107,8 +105,12 @@ query UserQuery($login: String!){
   }
 }
 `;
+const variables = { login: 'JamieWoodbury' };
 
-gqlFetch(query, { login: 'JamieWoodbury' });
+fetch('https://api.github.com/graphql', {
+  // ...
+  body: JSON.stringify({ query, variables})
+})
 ```
 
 <details>
@@ -130,11 +132,16 @@ const query = `
 `;
 
 // ...
-
-useAsyncEffect(async () => {
-  const res = await gqlFetch<Response>(query, { resultsPerPage });
-  setState(res.data);
-}, [resultsPerPage]);
+const variables = { resultsPerPage };
+useEffect(() => {
+  fetch('https://api.github.com/graphql', {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({ query, variables })
+  })
+    .then(res => res.json())
+    .then(res => setData(res.data));
+}, []);
 ```
 
 </details>
@@ -163,14 +170,22 @@ const query = `
 
 // ...
 
-const search = async (variables: Variables, cb: (data: Data) => void) => {
-  const res = await gqlFetch<Response<Data>>(query, variables);
-  cb(res.data);
-};
+const [login, setLogin] = useState<string>('');
+
+useEffect(() => {
+  const variables = { resultsPerPage, login };
+  fetch('https://api.github.com/graphql', {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({ query, variables })
+  })
+    .then(res => res.json())
+    .then(res => setData(res.data));
+}, [resultsPerPage, login]);
 
 // ...
 
-<Search onSubmit={(login: string) => search({ resultsPerPage, login }, setData)} />;
+<Search onSubmit={setLogin} />
 ```
 
 <details>

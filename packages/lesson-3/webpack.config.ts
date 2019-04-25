@@ -5,6 +5,6 @@ import base from '../../webpack.config';
 
 export default merge(base, {
   entry: {
-    index: [path.resolve(__dirname, 'index.tsx')]
+    index: [path.resolve(__dirname, 'src/index.tsx')]
   }
 });

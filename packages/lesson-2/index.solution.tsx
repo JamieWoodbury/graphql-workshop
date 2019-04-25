@@ -1,7 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import { useAsyncEffect, gqlFetch, Search, Pagination } from './util';
+import { Search, Pagination } from './util';
 import styles from './styles.css';
+
+const headers = {
+  'Content-Type': 'application/json',
+  Accept: 'application/json',
+  Authorization: `Bearer ${process.env.GITHUB_TOKEN}`
+};
 
 const query = `
   query ViewerQuery($resultsPerPage: Int!, $login: String!) {
@@ -19,14 +25,6 @@ const query = `
   }
 `;
 
-type NodeList<T> = {
-  nodes: T[];
-};
-
-type Response<T> = {
-  data: T;
-};
-
 interface Repository {
   id: string;
   name: string;
@@ -37,7 +35,9 @@ interface Viewer {
 }
 
 interface User {
-  repositories: NodeList<Repository>;
+  repositories: {
+    nodes: Repository[];
+  };
 }
 
 interface Data {
@@ -45,24 +45,21 @@ interface Data {
   user: User | null;
 }
 
-interface Variables {
-  resultsPerPage: number;
-  login: string;
-}
-
-const search = async (variables: Variables, cb: (data: Data) => void) => {
-  const res = await gqlFetch<Response<Data>>(query, variables);
-  cb(res.data);
-};
-
 const App = () => {
   const [data, setData] = useState<Data | null>(null);
   const [resultsPerPage, setResultsPerPage] = useState<number>(5);
+  const [login, setLogin] = useState<string>('');
 
-  useAsyncEffect(async () => {
-    const res = await gqlFetch<Response<Data>>(query, { resultsPerPage, login: '' });
-    setData(res.data);
-  }, [resultsPerPage]);
+  useEffect(() => {
+    const variables = { resultsPerPage, login };
+    fetch('https://api.github.com/graphql', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ query, variables })
+    })
+      .then(res => res.json())
+      .then(res => setData(res.data));
+  }, [resultsPerPage, login]);
 
   return data ? (
     <div className={styles.main}>
@@ -71,7 +68,7 @@ const App = () => {
       </h2>
       <h3>Your Repositories:</h3>
 
-      <Search onSubmit={(login: string) => search({ resultsPerPage, login }, setData)} />
+      <Search onSubmit={setLogin} />
 
       <table className={styles.table}>
         <thead>

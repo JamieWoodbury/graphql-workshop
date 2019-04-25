@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import styles from './styles.css';
 import gql from 'graphql-tag';
 import { useQuery } from 'react-apollo-hooks';
-import { Search } from './util';
-import { Pagination } from '../lesson-2/util';
+import { Search, Pagination } from './util';
 
 const query = gql`
   query RepoQuery($resultsPerPage: Int!, $login: String!) {
@@ -21,17 +20,15 @@ const query = gql`
   }
 `;
 
-type NodeList<T> = {
-  nodes: T[];
-};
-
 interface Repository {
   id: string;
   name: string;
 }
 
 interface User {
-  repositories: NodeList<Repository>;
+  repositories: {
+    nodes: Repository[];
+  };
 }
 
 interface Viewer {
