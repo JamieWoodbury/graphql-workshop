@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styles from './styles.css';
 import gql from 'graphql-tag';
-import { useQuery } from 'react-apollo-hooks';
+import { useQuery, useMutation, MutationFn } from 'react-apollo-hooks';
 import { Search, Pagination } from './util';
 
 const query = gql`
@@ -15,7 +15,19 @@ const query = gql`
         nodes {
           name
           id
+          viewerHasStarred
         }
+      }
+    }
+  }
+`;
+
+const mutation = gql`
+  mutation AddStar($starrableId: ID!) {
+    addStar(input: { starrableId: $starrableId }) {
+      starrable {
+        id
+        viewerHasStarred
       }
     }
   }
@@ -47,16 +59,25 @@ interface QueryVariables {
   login: string;
 }
 
+interface MutationVariables {
+  starrableId: string;
+}
+
+interface MutationData {
+  id: string;
+}
+
 interface Props {
   data: QueryData;
   resultsPerPage: number;
   setResultsPerPage: (n: number) => void;
   setLogin: (n: string) => void;
   login: string;
+  addStar: MutationFn<MutationData, MutationVariables>;
 }
 
 export const Repos = (props: Props) => {
-  const { data, resultsPerPage, setResultsPerPage, setLogin, login } = props;
+  const { data, resultsPerPage, setResultsPerPage, setLogin, login, addStar } = props;
   return (
     <div className={styles.main}>
       <h2>
@@ -78,7 +99,12 @@ export const Repos = (props: Props) => {
               <tr key={repo.id}>
                 <td>{repo.name}</td>
                 <td>
-                  <button>Star Me!</button>
+                  <button
+                    disabled={repo.viewerHasStarred}
+                    onClick={() => addStar({ variables: { starrableId: repo.id } })}
+                  >
+                    Star Me!
+                  </button>
                 </td>
               </tr>
             ))}
@@ -101,6 +127,8 @@ export default function App() {
     }
   });
 
+  const [addStar, _] = useMutation<MutationData, MutationVariables>(mutation);
+
   if (loading) {
     return <p>Loading...</p>;
   } else if (error) {
@@ -113,6 +141,7 @@ export default function App() {
         setResultsPerPage={setResultsPerPage}
         setLogin={setLogin}
         login={login}
+        addStar={addStar}
       />
     );
   } else {

@@ -3,5 +3,8 @@
   "version": "1.0.0",
   "description": "Lesson #1: Queries & Mutations",
   "author": "",
+  "scripts": {
+    "start": "echo 'Take a look at the Readme for this lesson'"
+  },
   "license": "ISC"
 }

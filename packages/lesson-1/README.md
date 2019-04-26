@@ -431,15 +431,12 @@ query UserQuery($login: String!, $n: Int!) {
 Up until we've focused on querying data from a GraphQL API and avoided talking about write operations. In GraphQL, these are known as `mutations`, and can be thought of as making a `POST` request. Let's start by looking at an example of a mutation where we add a new comment to a PR (using the id we would have gotten from a previous query):
 
 ```graphql
-mutation {
-  addComment(input: {
-    subjectId: "MDEwOlJlcG9zaXRvcnkxODE4OTMQWER="
-    body: "Cool PR."
-  }) {
-  	commentEdge {
+mutation AddCommentMutation {
+  addComment(input: { subjectId: "MDEwOlJlcG9zaXRvcnkxODE4OTMQWER=", body: "Cool PR." }) {
+    commentEdge {
       node {
         id
-      	bodyText
+        bodyText
       }
     }
   }
@@ -469,8 +466,8 @@ This doesn't look all that different from the queries we've been writing up unti
   <summary>a) Write a mutation to star this repository</summary>
 
 ```graphql
-mutation {
-  addStar(input: {starrableId: "MDEwOlJlcG9zaXRvcnkxODE4OTM1NjI="}) {
+mutation AddStarMutation {
+  addStar(input: { starrableId: "MDEwOlJlcG9zaXRvcnkxODE4OTM1NjI=" }) {
     starrable {
       id
       viewerHasStarred
@@ -478,4 +475,5 @@ mutation {
   }
 }
 ```
+
 </details>

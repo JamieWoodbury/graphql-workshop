@@ -69,10 +69,6 @@ const query = `
   }
 `;
 
-type NodeList<T> = {
-  nodes: T[];
-};
-
 interface Data {
   viewer: Viewer;
 }
@@ -85,7 +81,7 @@ interface Repository {
 interface Viewer {
   login: string;
   repositories: {
-    nodes: Repository: [];
+    nodes: Repository[];
   };
 }
 ```
@@ -109,8 +105,8 @@ const variables = { login: 'JamieWoodbury' };
 
 fetch('https://api.github.com/graphql', {
   // ...
-  body: JSON.stringify({ query, variables})
-})
+  body: JSON.stringify({ query, variables })
+});
 ```
 
 <details>
@@ -185,7 +181,7 @@ useEffect(() => {
 
 // ...
 
-<Search onSubmit={setLogin} />
+<Search onSubmit={setLogin} />;
 ```
 
 <details>
