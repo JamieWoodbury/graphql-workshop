@@ -6,9 +6,9 @@ The goal of this tutorial is to get frontend developers up and running with Grap
 
 The tutorial is broken into three sections:
 
-1. [**GraphQL Queries & Mutations**](packages/lesson-1). This will get users familiar with the GraphQL Query syntax, and includes some practice using the Github API
-2. [**Creating a GraphQL Client**](packages/lesson-2). Here we'll start to execute GraphQL queries on the client side to power a react app. This section doesn't use any frameworks and is meant to expose users to what's going on under the hood of tools like Apollo and Relay
-3. [**Apollo**](packages/lesson-3). This lesson will introduce the most popular client-side GraphQL frameworks: [Apollo](https://www.apollographql.com/)
+1. [**GraphQL Queries & Mutations**](lessons/lesson-1). This will get users familiar with the GraphQL Query syntax, and includes some practice using the Github API
+2. [**Creating a GraphQL Client**](lessons/lesson-2). Here we'll start to execute GraphQL queries on the client side to power a react app. This section doesn't use any frameworks and is meant to expose users to what's going on under the hood of tools like Apollo and Relay
+3. [**Apollo**](lessons/lesson-3). This lesson will introduce the most popular client-side GraphQL frameworks: [Apollo](https://www.apollographql.com/)
 
 ## Setup
 
