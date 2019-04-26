@@ -58,21 +58,13 @@ const config: webpack.Configuration = {
               url: false
             }
           }
-          // {
-          //   loader: 'postcss-loader',
-          //   options: {
-          //     config: {
-          //       path: path.resolve(__dirname, '../postcss.config.js')
-          //     }
-          //   }
-          // }
         ]
       }
     ]
   },
   resolve: {
     mainFields: ['module', 'main'],
-    modules: ['node_modules', path.resolve(__dirname, './packages')],
+    modules: ['node_modules', path.resolve(__dirname, './lessons')],
     extensions: ['.ts', '.tsx', '.js', '.css'],
     alias: {
       'react-dom': '@hot-loader/react-dom'

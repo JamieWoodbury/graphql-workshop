@@ -17,5 +17,5 @@
     "keyofStringsOnly": true,
     "esModuleInterop": true
   },
-  "include": ["./packages/**/*", "./interfaces", "./packages/**/interfaces"]
+  "include": ["lessons/**/*", "./interfaces/*", "lessons/**/interfaces/*"]
 }
