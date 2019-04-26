@@ -231,6 +231,10 @@ query {
     name
     location
   }
+  jamie: user(login: "JamieWoodbury") {
+    name
+    location
+  }
 }
 ```
 
@@ -327,7 +331,7 @@ query {
 </details>
 
 <details>
-  <summary>c) Write a query to fetch the first 5 mentionable users and the first 5 watchers of the facebook repo, along with their login, location, email and status</summary>
+  <summary>c) Write a query to fetch the first 5 mentionable users and the first 5 watchers of the react repo, along with their login, location, email and status</summary>
 
 ```graphql
 query {
