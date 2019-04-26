@@ -1,20 +1,33 @@
 import React, { useState } from 'react';
 import styles from './styles.css';
 import gql from 'graphql-tag';
-import { useQuery } from 'react-apollo-hooks';
+import { useQuery, useMutation, MutationFn } from 'react-apollo-hooks';
 import { Search, Pagination } from './util';
 
 const query = gql`
   query RepoQuery($resultsPerPage: Int!, $login: String!) {
     viewer {
       login
+      location
     }
     user(login: $login) {
       repositories(last: $resultsPerPage) {
         nodes {
           name
           id
+          viewerHasStarred
         }
+      }
+    }
+  }
+`;
+
+const mutation = gql`
+  mutation AddStar($starrableId: ID!) {
+    addStar(input: { starrableId: $starrableId }) {
+      starrable {
+        id
+        viewerHasStarred
       }
     }
   }
@@ -23,6 +36,7 @@ const query = gql`
 interface Repository {
   id: string;
   name: string;
+  viewerHasStarred: boolean;
 }
 
 interface User {
@@ -35,26 +49,35 @@ interface Viewer {
   login: string;
 }
 
-interface Data {
+interface QueryData {
   user: User;
   viewer: Viewer;
 }
 
-interface Variables {
+interface QueryVariables {
   resultsPerPage: number;
   login: string;
 }
 
+interface MutationVariables {
+  starrableId: string;
+}
+
+interface MutationData {
+  id: string;
+}
+
 interface Props {
-  data: Data;
+  data: QueryData;
   resultsPerPage: number;
   setResultsPerPage: (n: number) => void;
   setLogin: (n: string) => void;
   login: string;
+  addStar: MutationFn<MutationData, MutationVariables>;
 }
 
 export const Repos = (props: Props) => {
-  const { data, resultsPerPage, setResultsPerPage, setLogin, login } = props;
+  const { data, resultsPerPage, setResultsPerPage, setLogin, login, addStar } = props;
   return (
     <div className={styles.main}>
       <h2>
@@ -67,6 +90,7 @@ export const Repos = (props: Props) => {
         <thead>
           <tr>
             <th>Repo Name</th>
+            <th>Stars</th>
           </tr>
         </thead>
         <tbody>
@@ -74,6 +98,14 @@ export const Repos = (props: Props) => {
             data.user.repositories.nodes.map(repo => (
               <tr key={repo.id}>
                 <td>{repo.name}</td>
+                <td>
+                  <button
+                    disabled={repo.viewerHasStarred}
+                    onClick={() => addStar({ variables: { starrableId: repo.id } })}
+                  >
+                    Star Me!
+                  </button>
+                </td>
               </tr>
             ))}
         </tbody>
@@ -88,12 +120,14 @@ export default function App() {
   const [resultsPerPage, setResultsPerPage] = useState<number>(5);
   const [login, setLogin] = useState<string>('gaearon');
 
-  const { data, error, loading } = useQuery<Data, Variables>(query, {
+  const { data, error, loading, refetch } = useQuery<QueryData, QueryVariables>(query, {
     variables: {
       resultsPerPage,
       login
     }
   });
+
+  const addStar = useMutation<MutationData, MutationVariables>(mutation);
 
   if (loading) {
     return <p>Loading...</p>;
@@ -107,6 +141,7 @@ export default function App() {
         setResultsPerPage={setResultsPerPage}
         setLogin={setLogin}
         login={login}
+        addStar={addStar}
       />
     );
   } else {

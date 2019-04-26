@@ -38,7 +38,7 @@ export default () => {
 };
 ```
 
-This looks very similar to what we were doing with `gqlFetch` in the previous lesson, but with all of the state management logic stripped away. What we're left with are three variables `data`, `loading`, and `error`. When the request first executes `loading` will be true, until the query resolves. If it resolves as a success, the component will re-render and `data` will contain the result of our query. If it errors out, `error` will contain the relevant error.
+This looks very similar to what we were doing the raw `useEffect/fetch` calls in the previous lesson, but with all of the state management logic stripped away. What we're left with are three variables `data`, `loading`, and `error`. When the request first executes `loading` will be true, until the query resolves. If it resolves as a success, the component will re-render and `data` will contain the result of our query. If it errors out, `error` will contain the relevant error.
 
 What makes Apollo powerful is that if we were to make this request again, Apollo would first check to see if the relevant nodes are contained in its cache. If it finds the relevant data, it will return that and avoid making another network call. If you've ever used other state management solutions like redux, you'll understand how much effort not having to manage this state yourself could save. Just write your query, and that's it [mostly].
 
@@ -77,3 +77,7 @@ ReactDOM.render(
 ```
 
 With that we're free to make graphQL requests from inside the `App` component using the `useQuery` and `useMutation` hooks provided by `react-apollo-hooks`.
+
+## Exercises
+
+### 1. Add the ability to star any repo in the list
