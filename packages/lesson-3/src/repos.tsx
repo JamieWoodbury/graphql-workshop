@@ -120,7 +120,7 @@ export default function App() {
   const [resultsPerPage, setResultsPerPage] = useState<number>(5);
   const [login, setLogin] = useState<string>('gaearon');
 
-  const { data, error, loading, refetch } = useQuery<QueryData, QueryVariables>(query, {
+  const { data, error, loading } = useQuery<QueryData, QueryVariables>(query, {
     variables: {
       resultsPerPage,
       login

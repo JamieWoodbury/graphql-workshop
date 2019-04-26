@@ -1,4 +1,4 @@
-# Lesson 1: Queries
+# Lesson 1: Queries & Mutations
 
 ## Intro to GraphiQL
 
@@ -477,6 +477,5 @@ mutation {
     }
   }
 }
-
 ```
 </details>

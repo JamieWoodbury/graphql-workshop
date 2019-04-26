@@ -81,3 +81,5 @@ With that we're free to make graphQL requests from inside the `App` component us
 ## Exercises
 
 ### 1. Add the ability to star any repo in the list
+
+For this you should be able to re-use the mutation created in lesson-1.
